@@ -104,7 +104,8 @@
         //Cook-Torrance 
 		inline float3 CookTorranceSpec(float NdotL, float LdotH, float NdotH, float NdotV, float roughness, float F0){
 			float alpha = sqr(roughness);
-            float F, D, G;
+            float3 F;
+			float D, G;
 
 			// D
 			float alphaSqr = sqr(alpha);
@@ -122,7 +123,7 @@
             float g1V = G1(k, NdotV);
             G = g1L * g1V;
             
-            float specular = NdotL * D * F * G;
+            float3 specular = NdotL * D * F * G;
 			return specular;
 		}
 
@@ -151,7 +152,7 @@
 			float3 diff = DisneyDiff(s.Albedo, NdotL,  NdotV, LdotH, _Roughness);
 			float3 spec = CookTorranceSpec(NdotL, LdotH, NdotH, NdotV, _Roughness, _SpecColor);
 			float3 diff2 = (DisneyFrostbiteDiff(NdotL, NdotV, LdotH, _Roughness) * s.Albedo)/PI;
-			float3 firstLayer = ( diff + spec * _SpecColor) * _LightColor0.rgb;
+			float3 firstLayer = ( diff + spec ) * _LightColor0.rgb;
             float4 c = float4(firstLayer, s.Alpha);
 
 			#ifdef UNITY_LIGHT_FUNCTION_APPLY_INDIRECT
